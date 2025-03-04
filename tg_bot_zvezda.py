@@ -64,6 +64,8 @@ is_bot_active = True
 # Бан-лист
 banned_users = set()
 
+from dotenv import load_dotenv
+load_dotenv()
 def get_db_connection():
     try: 
     # Получаем строку подключения из переменных окружения
