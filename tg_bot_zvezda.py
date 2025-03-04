@@ -13,8 +13,6 @@ import re
 import sqlite3
 import time
 from datetime import datetime, time as dt_time  # Используйте alias для избежания конфликта
-import os
-from urllib.parse import urlparse
 import psycopg2
 from psycopg2.extras import DictCursor
 import asyncio
@@ -64,22 +62,15 @@ is_bot_active = True
 # Бан-лист
 banned_users = set()
 
+
 def get_db_connection():
-    try: 
-    # Получаем строку подключения из переменных окружения
-        database_url = os.getenv('DATABASE_URL')
-        if not database_url:
-            raise ValueError("Переменная окружения DATABASE_URL не настроена.")
-        # Парсим URL
-        result = urlparse(database_url)
-    
-        # Подключаемся
+    try:
         conn = psycopg2.connect(
-            database=result.path[1:],  # Убираем первый символ '/'
-            user=result.username,
-            password=result.password,
-            host=result.hostname,
-            port=result.port
+            database="railway",  # Имя вашей БД
+            user="postgres",          # Пользователь БД
+            password="NSHWEgFYGUgAmGtRvPxhNbIVHNhdNacT",      # Пароль
+            host="postgres.railway.internal",              # Хост (например, localhost)
+            port="5432"                    # Порт PostgreSQL
         )
         return conn
     except Exception as e:
@@ -311,12 +302,6 @@ async def delete_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Обработчик новых сообщений
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    global is_bot_active
-
-    if not is_bot_active:
-        logger.info("Бот неактивен. Сообщение игнорируется.")
-        return
-    
     message = update.message
     user = message.from_user
     chat_id = message.chat.id
